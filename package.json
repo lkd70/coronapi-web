@@ -1,0 +1,31 @@
+{
+  "name": "coronapi-web",
+  "version": "0.1.0",
+  "description": "REST API for coronapi",
+  "main": "bin/app",
+  "dependencies": {
+    "coronapi": "^0.1.1",
+    "express": "^4.17.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LKD70/coronapi-web.git"
+  },
+  "keywords": [
+    "LKD70",
+    "Coronavirus",
+    "Corona",
+    "COVID-19",
+    "coronapi"
+  ],
+  "author": "LKD70",
+  "license": "AGPL-3.0",
+  "bugs": {
+    "url": "https://github.com/LKD70/coronapi-web/issues"
+  },
+  "homepage": "https://github.com/LKD70/coronapi-web#readme"
+}

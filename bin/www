@@ -1,0 +1,44 @@
+#!/usr/bin/env node
+'use strict';
+
+const app = require('../app');
+const http = require('http');
+
+const normalizePort = inport => {
+	const port = parseInt(inport, 10);
+	if (isNaN(port)) return inport;
+	if (port >= 0) return port;
+	return false;
+};
+
+const port = normalizePort(process.env.PORT || '3000');
+
+const onError = error => {
+	if (error.syscall !== 'listen') throw error;
+
+	const err = msg => {
+		// eslint-disable-next-line no-console
+		console.error(`${typeof port === 'string' ? 'Pipe' : 'Port'} ${port} ${msg}`);
+		// eslint-disable-next-line no-process-exit
+		process.exit(1);
+	};
+
+	switch (error.code) {
+	case 'EACCESS':
+		err('requires elevated privileges');
+		break;
+	case 'EADDRINUSE':
+		err('is already in use');
+		break;
+	default:
+		throw error;
+	}
+
+};
+
+
+app.set('port', port);
+
+const server = http.createServer(app);
+server.listen(port);
+server.on('error', onError);
