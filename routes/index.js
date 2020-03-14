@@ -5,17 +5,23 @@ const express = require('express');
 const router = express.Router();
 const fs = require('fs');
 
+global.cache = {};
 const cache_timeout = parseInt(process.env.CACHE_TIMEOUT) || 60000;
+const file_cache = parseInt(process.env.FILE_CACHE) || true;
 
 const genCache = () => new Promise((resolve, reject) => coronapi().then(data => {
 	const d = { updated: new Date().getTime(), data };
-	fs.writeFile('./cache.json', JSON.stringify(d), err => {
-		if (err) {
-			reject(err);
-		} else {
-			resolve(d);
-		}
-	});
+	if (file_cache === true) {
+		fs.writeFile('./cache.json', JSON.stringify(d), err => {
+			if (err) {
+				reject(err);
+			} else {
+				resolve(d);
+			}
+		});
+	} else {
+		global.cache = d;
+	}
 }));
 
 const rmCache = () => new Promise((resolve, reject) => fs.unlink('./cache.json', err => {
@@ -26,43 +32,50 @@ const rmCache = () => new Promise((resolve, reject) => fs.unlink('./cache.json',
 	}
 }));
 
-const getData = () => new Promise((resolve, reject) =>
-	fs.access('./cache.json', fs.F_OK, err => {
-		if (err) {
-			if (err.errno === -4058) {
-				genCache().then(cache => {
-					if (cache === false) {
-						reject(new Error('generate cache failed'));
+const getData = () => new Promise((resolve, reject) => {
+	if (file_cache) {
+		fs.access('./cache.json', fs.F_OK, err => {
+			if (err) {
+				if (err.errno === -4058) {
+					genCache().then(cache => {
+						if (cache === false) {
+							reject(new Error('generate cache failed'));
+						} else {
+							resolve(cache);
+						}
+					});
+				} else {
+					reject(err);
+				}
+			} else {
+				fs.readFile('./cache.json', (_err, data) => {
+					if (_err) {
+						reject(_err);
 					} else {
-						resolve(cache);
+						const d = JSON.parse(data);
+						if (new Date().getTime() - d.updated > cache_timeout) {
+							rmCache().then(() => {
+								genCache().then(cache => {
+									if (cache === false) {
+										reject(new Error('generate cache failed'));
+									} else {
+										resolve(cache);
+									}
+								});
+							}).catch(reject);
+						} else {
+							resolve(d);
+						}
 					}
 				});
-			} else {
-				reject(err);
 			}
-		} else {
-			fs.readFile('./cache.json', (_err, data) => {
-				if (_err) {
-					reject(_err);
-				} else {
-					const d = JSON.parse(data);
-					if (new Date().getTime() - d.updated > cache_timeout) {
-						rmCache().then(() => {
-							genCache().then(cache => {
-								if (cache === false) {
-									reject(new Error('generate cache failed'));
-								} else {
-									resolve(cache);
-								}
-							});
-						}).catch(reject);
-					} else {
-						resolve(d);
-					}
-				}
-			});
-		}
-	}));
+		});
+	} else if (new Date().getTime() - d.updated > cache_timeout) {
+		genCache().then(resolve);
+	} else {
+		resolve(global.cache);
+	}
+});
 
 const cleanString = string => string.replace(/ /g, '').replace(/\./g, '').toLowerCase();
 
