@@ -64,8 +64,57 @@ const getData = () => new Promise((resolve, reject) =>
 		}
 	}));
 
+const cleanString = string => string.replace(/ /g, '').replace(/\./g, '').toLowerCase();
+
 router.get('/', (req, res) => {
 	getData().then(data => res.json(data));
 });
+
+const countryExists = (c, a) => {
+	c = cleanString(c);
+	const b = Object.keys(a.data).map(cleanString);
+	if (b.includes(c)) return a.data[Object.keys(a.data)[b.indexOf(c)]];
+	return false;
+};
+
+const countryHandler = (req, res) => {
+	const countries = req.params.countryNames
+		? req.params.countryNames.split('|') : [];
+
+	getData().then(data => {
+		if (countries.length === 0) {
+			res.json(Object.keys(data.data));
+		} else {
+			const d = {
+				...data.updated
+			};
+			countries.forEach(country => {
+				const c = countryExists(country, data);
+				if (c) {
+					d[country] = {
+						...c
+					};
+				} else {
+					d[country] = {
+						error: true,
+						message: 'Unknown country. Use /countrylist for more details'
+					};
+				}
+			});
+			res.json(d);
+		}
+	});
+};
+
+const listCountriesHandler = (req, res) => {
+	getData().then(data => {
+		res.json(Object.keys(data.data));
+	});
+};
+
+router.get('/country/:countryNames?', countryHandler);
+router.get('/countries/:countryNames?', countryHandler);
+router.get('/countrylist', listCountriesHandler);
+router.get('/list', listCountriesHandler);
 
 module.exports = router;
