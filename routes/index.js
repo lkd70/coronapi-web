@@ -7,7 +7,7 @@ const fs = require('fs');
 
 global.cache = {};
 const cache_timeout = parseInt(process.env.CACHE_TIMEOUT) || 60000;
-const file_cache = parseInt(process.env.FILE_CACHE) || true;
+const file_cache = parseInt(process.env.FILE_CACHE) || false;
 
 const genCache = () => new Promise((resolve, reject) => coronapi().then(data => {
 	const d = { updated: new Date().getTime(), data };
@@ -70,7 +70,7 @@ const getData = () => new Promise((resolve, reject) => {
 				});
 			}
 		});
-	} else if (new Date().getTime() - d.updated > cache_timeout) {
+	} else if (new Date().getTime() - global.cache.updated > cache_timeout) {
 		genCache().then(resolve);
 	} else {
 		resolve(global.cache);
