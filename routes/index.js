@@ -23,6 +23,7 @@ const genCache = () => new Promise((resolve, reject) => coronapi().then(data => 
 		});
 	} else {
 		global.cache = d;
+		resolve(d);
 	}
 }));
 
