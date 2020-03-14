@@ -5,7 +5,9 @@ const express = require('express');
 const router = express.Router();
 const fs = require('fs');
 
-global.cache = {};
+global.cache = {
+	updated: 0
+};
 const cache_timeout = parseInt(process.env.CACHE_TIMEOUT) || 60000;
 const file_cache = parseInt(process.env.FILE_CACHE) || false;
 
