@@ -4,7 +4,7 @@
   "description": "REST API for coronapi",
   "main": "bin/app",
   "dependencies": {
-    "coronapi": "^0.1.2",
+    "coronapi": "^0.2.1",
     "express": "^4.17.1"
   },
   "devDependencies": {},

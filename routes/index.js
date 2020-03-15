@@ -9,8 +9,8 @@ global.cache = {
 	updated: 0
 };
 const cache_timeout = parseInt(process.env.CACHE_TIMEOUT) || 60000;
-const file_cache = process.env.FILE_CACHE.toLowerCase === 'true'
-	? process.env.FILE_CACHE : false;
+const file_cache = process.env.FILE_CACHE ? process.env.FILE_CACHE === 'true'
+	? process.env.FILE_CACHE : false : false;
 
 const genCache = () => new Promise((resolve, reject) => coronapi().then(data => {
 	const d = { updated: new Date().getTime(), data };
