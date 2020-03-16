@@ -9,11 +9,14 @@ global.cache = {
 	updated: 0
 };
 const cache_timeout = parseInt(process.env.CACHE_TIMEOUT) || 60000;
-const file_cache = process.env.FILE_CACHE ? process.env.FILE_CACHE === 'true'
-	? process.env.FILE_CACHE : false : false;
+const file_cache = process.env.FILE_CACHE ? process.env.FILE_CACHE === 'true' ?
+	process.env.FILE_CACHE : false : false;
 
-const genCache = () => new Promise((resolve, reject) => coronapi().then(data => {
-	const d = { updated: new Date().getTime(), data };
+const genCache = () => new Promise((resolve, reject) => coronapi.then(data => {
+	const d = {
+		updated: new Date().getTime(),
+		data
+	};
 	if (file_cache === true) {
 		fs.writeFile('./cache.json', JSON.stringify(d), err => {
 			if (err) {
@@ -89,18 +92,18 @@ router.get('/', (req, res) => {
 
 const countryExists = (c, a) => {
 	c = cleanString(c);
-	const b = Object.keys(a.data).map(cleanString);
-	if (b.includes(c)) return a.data[Object.keys(a.data)[b.indexOf(c)]];
+	const b = Object.keys(a.data.countries).map(cleanString);
+	if (b.includes(c)) return a.data.countries[Object.keys(a.data.countries)[b.indexOf(c)]];
 	return false;
 };
 
 const countryHandler = (req, res) => {
-	const countries = req.params.countryNames
-		? req.params.countryNames.split('|') : [];
+	const countries = req.params.countryNames ?
+		req.params.countryNames.split('|') : [];
 
 	getData().then(data => {
 		if (countries.length === 0) {
-			res.json(Object.keys(data.data));
+			res.json(Object.keys(data.data.countries));
 		} else {
 			const d = {
 				...data.updated
@@ -123,15 +126,17 @@ const countryHandler = (req, res) => {
 	});
 };
 
-const listCountriesHandler = (req, res) => {
-	getData().then(data => {
-		res.json(Object.keys(data.data));
-	});
-};
+const totalHandler = (req, res) => getData().then(data => res.json({
+	updated: data.updated,
+	...data.data.total
+}));
 
-router.get('/country/:countryNames?', countryHandler);
-router.get('/countries/:countryNames?', countryHandler);
+const listCountriesHandler = (req, res) => getData().then(data => {
+	res.json(Object.keys(data.data));
+});
+
+router.get('/country?(ies)?/:countryNames?', countryHandler);
 router.get('/countrylist', listCountriesHandler);
 router.get('/list', listCountriesHandler);
-
+router.get('/totals?', totalHandler);
 module.exports = router;

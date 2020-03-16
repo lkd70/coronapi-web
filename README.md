@@ -46,12 +46,12 @@ Returns all data
 
 ### Route: `/countries`
 
-Lists all country names (Includes "Total")
+Lists all country names
 
 #### Example response
 
 ```json
-["China","Italy","Iran","S. Korea","Spain","Germany","France","USA","Switzerland","UK","Norway","Sweden","Netherlands","Denmark","Japan","Diamond Princess","Belgium","Austria","Qatar","Australia","Malaysia","Greece","Canada","Finland","Bahrain","Singapore","Czechia","Slovenia","Israel","Portugal","Iceland","Brazil","Hong Kong","Ireland","Romania","Estonia","Philippines","Iraq","Egypt","Kuwait","Poland","Saudi Arabia","San Marino","India","Indonesia","Lebanon","UAE","Thailand","Chile","Russia","Taiwan","Vietnam","Luxembourg","Serbia","Slovakia","Bulgaria","Brunei","Albania","Croatia","Peru","South Africa","Palestine","Algeria","Panama","Argentina","Pakistan","Georgia","Hungary","Ecuador","Belarus","Latvia","Mexico","Costa Rica","Cyprus","Colombia","Senegal","Oman","Armenia","Tunisia","Bosnia and Herzegovina","Malta","Morocco","Azerbaijan","North Macedonia","Moldova","Afghanistan","Dominican Republic","Macao","Sri Lanka","Bolivia","Maldives","Martinique","Faeroe Islands","Lithuania","Jamaica","Cambodia","French Guiana","Paraguay","New Zealand","Kazakhstan","Réunion","Bangladesh","Turkey","Cuba","Liechtenstein","Uruguay","Ukraine","Channel Islands","French Polynesia","Guadeloupe","Honduras","Puerto Rico","Monaco","Nigeria","Aruba","Burkina Faso","Cameroon","DRC","Ghana","Namibia","Saint Martin","Trinidad and Tobago","Venezuela","Guyana","Sudan","Andorra","Jordan","Nepal","Antigua and Barbuda","Bhutan","Cayman Islands","Ivory Coast","Curaçao","Ethiopia","Gabon","Gibraltar","Guatemala","Guinea","Vatican City","Kenya","Mauritania","Mayotte","Mongolia","Rwanda","St. Barth","Saint Lucia","St. Vincent Grenadines","Suriname","Eswatini","Togo","U.S. Virgin Islands","Total"]
+["China","Italy","Iran","S. Korea","Spain","Germany","France","USA","Switzerland","UK","Norway","Sweden","Netherlands","Denmark","Japan","Diamond Princess","Belgium","Austria","Qatar","Australia","Malaysia","Greece","Canada","Finland","Bahrain","Singapore","Czechia","Slovenia","Israel","Portugal","Iceland","Brazil","Hong Kong","Ireland","Romania","Estonia","Philippines","Iraq","Egypt","Kuwait","Poland","Saudi Arabia","San Marino","India","Indonesia","Lebanon","UAE","Thailand","Chile","Russia","Taiwan","Vietnam","Luxembourg","Serbia","Slovakia","Bulgaria","Brunei","Albania","Croatia","Peru","South Africa","Palestine","Algeria","Panama","Argentina","Pakistan","Georgia","Hungary","Ecuador","Belarus","Latvia","Mexico","Costa Rica","Cyprus","Colombia","Senegal","Oman","Armenia","Tunisia","Bosnia and Herzegovina","Malta","Morocco","Azerbaijan","North Macedonia","Moldova","Afghanistan","Dominican Republic","Macao","Sri Lanka","Bolivia","Maldives","Martinique","Faeroe Islands","Lithuania","Jamaica","Cambodia","French Guiana","Paraguay","New Zealand","Kazakhstan","Réunion","Bangladesh","Turkey","Cuba","Liechtenstein","Uruguay","Ukraine","Channel Islands","French Polynesia","Guadeloupe","Honduras","Puerto Rico","Monaco","Nigeria","Aruba","Burkina Faso","Cameroon","DRC","Ghana","Namibia","Saint Martin","Trinidad and Tobago","Venezuela","Guyana","Sudan","Andorra","Jordan","Nepal","Antigua and Barbuda","Bhutan","Cayman Islands","Ivory Coast","Curaçao","Ethiopia","Gabon","Gibraltar","Guatemala","Guinea","Vatican City","Kenya","Mauritania","Mayotte","Mongolia","Rwanda","St. Barth","Saint Lucia","St. Vincent Grenadines","Suriname","Eswatini","Togo","U.S. Virgin Islands"]
 ```
 
 ### Route: `/countries/<COUNTRY_NAME>|[COUNTRY_NAME]...`
@@ -84,5 +84,25 @@ query: `/countries/UK|USA`
     "serious_cases": 10,
     "total_cases_per_million": 7.5
   }
+}
+```
+
+### Route: `/total`
+
+Returns global statistics
+
+#### Example response
+
+```json
+{
+  "updated": 1584374601418,
+  "total_cases": 175693,
+  "new_cases": 6133,
+  "total_deaths": 6715,
+  "new_deaths": 210,
+  "total_recovered": 77868,
+  "active_cases": 91110,
+  "serious_cases": 5967,
+  "cases_per_million": 22.5
 }
 ```
