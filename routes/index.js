@@ -9,8 +9,8 @@ global.cache = {
 	updated: 0
 };
 const cache_timeout = parseInt(process.env.CACHE_TIMEOUT) || 60000;
-const file_cache = process.env.FILE_CACHE ? process.env.FILE_CACHE === 'true' ?
-	process.env.FILE_CACHE : false : false;
+const file_cache = process.env.FILE_CACHE ? process.env.FILE_CACHE === 'true'
+	? process.env.FILE_CACHE : false : false;
 
 const genCache = () => new Promise((resolve, reject) => coronapi.then(data => {
 	const d = {
@@ -98,8 +98,8 @@ const countryExists = (c, a) => {
 };
 
 const countryHandler = (req, res) => {
-	const countries = req.params.countryNames ?
-		req.params.countryNames.split('|') : [];
+	const countries = req.params.countryNames
+		? req.params.countryNames.split('|') : [];
 
 	getData().then(data => {
 		if (countries.length === 0) {
