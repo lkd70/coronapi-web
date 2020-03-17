@@ -90,53 +90,54 @@ router.get('/', (req, res) => {
 	getData().then(data => res.json(data));
 });
 
-const countryExists = (c, a) => {
-	c = cleanString(c);
-	const b = Object.keys(a.data.countries).map(cleanString);
-	if (b.includes(c)) return a.data.countries[Object.keys(a.data.countries)[b.indexOf(c)]];
-	return false;
+const getLocation = (loc, data) => {
+	loc = cleanString(loc);
+	let location = false;
+	data.areas.forEach(l => {
+		if (cleanString(l.id) === loc) {
+			location = l;
+		} else {
+			const res = getLocation(loc, l);
+			if (res !== false) location = res;
+		}
+	});
+	return location;
 };
 
-const countryHandler = (req, res) => {
-	const countries = req.params.countryNames
-		? req.params.countryNames.split('|') : [];
+const listLocations = data => {
+	const locations = [];
+	data.areas.forEach(loc => {
+		locations.push(loc.id);
+		listLocations(loc).forEach(l => locations.push(l));
+	});
+	return locations;
+};
+
+const locationHandler = (req, res) => {
+	const locations = req.params.locationNames
+		? req.params.locationNames.split('|'): [];
 
 	getData().then(data => {
-		if (countries.length === 0) {
-			res.json(Object.keys(data.data.countries));
+		if (locations.length === 0) {
+			res.json(listLocations(data.data));
 		} else {
-			const d = {
-				...data.updated
-			};
-			countries.forEach(country => {
-				const c = countryExists(country, data);
-				if (c) {
-					d[country] = {
-						...c
-					};
-				} else {
-					d[country] = {
-						error: true,
-						message: 'Unknown country. Use /countrylist for more details'
-					};
-				}
-			});
-			res.json(d);
+			res.json(locations.map(l => getLocation(l, data.data) || `Unknown location: ${l}`));
 		}
 	});
 };
 
 const totalHandler = (req, res) => getData().then(data => res.json({
-	updated: data.updated,
-	...data.data.total
+	totalConfirmed: data.data.totalConfirmed,
+	totalDeaths: data.data.totalDeaths,
+	totalRecovered: data.data.totalRecovered,
+	lastUpdated: data.data.lastUpdated
 }));
 
-const listCountriesHandler = (req, res) => getData().then(data => {
-	res.json(Object.keys(data.data));
-});
+const listLocationsHandler = (req, res) => getData().then(data =>
+	res.json(listLocations(data.data)));
 
-router.get('/country?(ies)?/:countryNames?', countryHandler);
-router.get('/countrylist', listCountriesHandler);
-router.get('/list', listCountriesHandler);
+router.get('/locations?/:locationNames?', locationHandler);
+router.get('/locationList', listLocationsHandler);
+router.get('/list', listLocationsHandler);
 router.get('/totals?', totalHandler);
 module.exports = router;
